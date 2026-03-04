@@ -19,21 +19,17 @@ namespace EXAMEN_SGREE
 
         private void FicheEmploye_Load(object sender, EventArgs e)
         {
-            if (System.ComponentModel.LicenseManager.UsageMode ==
-                System.ComponentModel.LicenseUsageMode.Designtime) return;
+            if (this.DesignMode) return;
 
             // Construire les labels d'infos ici (pas dans le Designer)
             InitInfosTab();
-
             ChargerInfosPersonnelles();
             ChargerContrats();
-
             // Niveaux depuis enum
             cboNiveau.Items.Clear();
             foreach (NiveauCompetence n in Enum.GetValues(typeof(NiveauCompetence)))
                 cboNiveau.Items.Add(n);
             cboNiveau.SelectedIndex = -1;
-
             ChargerListeCompetences();
             ChargerCompetences();
         }

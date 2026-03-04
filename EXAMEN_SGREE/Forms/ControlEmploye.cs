@@ -24,6 +24,8 @@ namespace EXAMEN_SGREE
 
         private void ControlEmploye_Load(object sender, EventArgs e)
         {
+            if (DesignMode) return;
+
             GetSituationSelectionnee.Items.Clear();
             foreach (SituationMatrimoniale s in Enum.GetValues(typeof(SituationMatrimoniale)))
                 GetSituationSelectionnee.Items.Add(s);
@@ -35,27 +37,22 @@ namespace EXAMEN_SGREE
                 cboFiltreStatut.Items.Add(s);
             cboFiltreStatut.SelectedIndex = 0;
 
-            npuPageSize.ValueChanged += new EventHandler(npuPageSize_ValueChanged);
-
+            npuPageSize.ValueChanged += new EventHandler(NpuPageSize_ValueChanged);
             AppliquerFiltres();
             Effacer();
         }
 
-
-
-        // ─── FILTRES ─────────────────────────────────────────────────────
+        // ─── FILTRES ──────────────────────────────────────────────────────
         private void AppliquerFiltres()
         {
             var tous = _service.GetAll();
 
-            // Filtre nom/prénom
             string recherche = txtRecherche.Text.Trim().ToLower();
             if (!string.IsNullOrEmpty(recherche))
                 tous = tous.Where(e =>
                     (e.Nom != null && e.Nom.ToLower().Contains(recherche)) ||
                     (e.Prenom != null && e.Prenom.ToLower().Contains(recherche))).ToList();
 
-            // Filtre situation matrimoniale
             if (cboFiltreStatut.SelectedIndex > 0)
             {
                 var sit = (SituationMatrimoniale)cboFiltreStatut.SelectedItem;
@@ -67,7 +64,7 @@ namespace EXAMEN_SGREE
             LoadData();
         }
 
-        // ─── CHARGER DONNEES ─────────────────────────────────────────────
+        // ─── CHARGER DONNÉES ──────────────────────────────────────────────
         private void LoadData()
         {
             _totalPages = (int)Math.Ceiling((double)_listeFiltree.Count / PageSize);
@@ -93,7 +90,7 @@ namespace EXAMEN_SGREE
             }
         }
 
-        // ─── EFFACER ─────────────────────────────────────────────────────
+        // ─── EFFACER ──────────────────────────────────────────────────────
         private void Effacer()
         {
             _selectedId = 0;
@@ -108,19 +105,20 @@ namespace EXAMEN_SGREE
             GetSituationSelectionnee.SelectedIndex = 0;
         }
 
-        // ─── VALIDATION ──────────────────────────────────────────────────
+        // ─── VALIDATION ───────────────────────────────────────────────────
         private bool Valider()
         {
             if (string.IsNullOrWhiteSpace(txtNom1.Text))
             { MessageBox.Show("Le champ Nom est obligatoire.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error); txtNom1.Focus(); return false; }
             if (string.IsNullOrWhiteSpace(txtprenom1.Text))
-            { MessageBox.Show("Le champ Prénom est obligatoire.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error); txtprenom1.Focus(); return false; }
+            { MessageBox.Show("Le champ Prenom est obligatoire.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error); txtprenom1.Focus(); return false; }
             if (string.IsNullOrWhiteSpace(txtCNI1.Text))
             { MessageBox.Show("Le champ CNI est obligatoire.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error); txtCNI1.Focus(); return false; }
             if (!string.IsNullOrWhiteSpace(txtEmail1.Text) && !txtEmail1.Text.Contains("@"))
             { MessageBox.Show("L'adresse Email n'est pas valide.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error); txtEmail1.Focus(); return false; }
-            if (!string.IsNullOrWhiteSpace(txtTelephone1.Text) && !System.Text.RegularExpressions.Regex.IsMatch(txtTelephone1.Text, @"^\d+$"))
-            { MessageBox.Show("Le Téléphone doit contenir uniquement des chiffres.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error); txtTelephone1.Focus(); return false; }
+            if (!string.IsNullOrWhiteSpace(txtTelephone1.Text) &&
+                !System.Text.RegularExpressions.Regex.IsMatch(txtTelephone1.Text, @"^\d+$"))
+            { MessageBox.Show("Le Telephone doit contenir uniquement des chiffres.", "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error); txtTelephone1.Focus(); return false; }
             return true;
         }
 
@@ -141,11 +139,12 @@ namespace EXAMEN_SGREE
             };
         }
 
-        // ─── SELECTION GRILLE ────────────────────────────────────────────
-        private void dataGridView1_CellClick_1(object sender, DataGridViewCellEventArgs e)
+        // ─── SÉLECTION GRILLE ─────────────────────────────────────────────
+        private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
-            var emp = _service.GetById(Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["Id"].Value));
+            var emp = _service.GetById(
+                Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["Id"].Value));
             if (emp == null) return;
 
             _selectedId = emp.Id;
@@ -160,73 +159,88 @@ namespace EXAMEN_SGREE
             GetSituationSelectionnee.SelectedItem = emp.SituationMatrimoniale;
         }
 
-        // ─── ENREGISTRER ─────────────────────────────────────────────────
-        private void btnEnregistrer_Click_1(object sender, EventArgs e)
+        private void DataGridView1_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0) return;
+            var emp = _service.GetById(
+                Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["Id"].Value));
+            if (emp == null) return;
+            using (var fiche = new FicheEmploye(emp))
+                fiche.ShowDialog(this);
+        }
+
+        // ─── CRUD ─────────────────────────────────────────────────────────
+        private void BtnEnregistrer_Click(object sender, EventArgs e)
         {
             if (!Valider()) return;
             var emp = GetEmployeFromForm();
             if (_service.CNIExists(emp.CNI))
-            { MessageBox.Show("Un employé avec ce CNI existe déjà.", "Avertissement", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            { MessageBox.Show("Un employe avec ce CNI existe deja.", "Avertissement", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
             _service.Add(emp);
             AppliquerFiltres();
             Effacer();
-            MessageBox.Show("Employé enregistré avec succès !", "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Employe enregistre avec succes !", "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // ─── MODIFIER ────────────────────────────────────────────────────
-        private void btnModifier_Click_1(object sender, EventArgs e)
+        private void BtnModifier_Click(object sender, EventArgs e)
         {
             if (_selectedId == 0)
-            { MessageBox.Show("Veuillez sélectionner un employé à modifier.", "Avertissement", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            { MessageBox.Show("Selectionnez un employe a modifier.", "Avertissement", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
             if (!Valider()) return;
             var emp = GetEmployeFromForm();
             if (_service.CNIExists(emp.CNI, emp.Id))
-            { MessageBox.Show("Un autre employé possède déjà ce CNI.", "Avertissement", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            { MessageBox.Show("Un autre employe possede deja ce CNI.", "Avertissement", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
             _service.Update(emp);
             AppliquerFiltres();
             Effacer();
-            MessageBox.Show("Employé modifié avec succès !", "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Employe modifie avec succes !", "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        // ─── SUPPRIMER ───────────────────────────────────────────────────
-        private void btnSupprimer_Click_1(object sender, EventArgs e)
+        private void BtnSupprimer_Click(object sender, EventArgs e)
         {
             if (_selectedId == 0)
-            { MessageBox.Show("Veuillez sélectionner un employé à supprimer.", "Avertissement", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
-            if (MessageBox.Show("Êtes-vous sûr de vouloir supprimer cet employé ?", "Confirmation",
+            { MessageBox.Show("Selectionnez un employe a supprimer.", "Avertissement", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
+            if (MessageBox.Show("Supprimer cet employe ?", "Confirmation",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _service.Delete(_selectedId);
                 AppliquerFiltres();
                 Effacer();
-                MessageBox.Show("Employé supprimé avec succès !", "Succès", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Employe supprime avec succes !", "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private void btnAnnuler_Click_1(object sender, EventArgs e) => Effacer();
+        private void BtnAnnuler_Click(object sender, EventArgs e) => Effacer();
 
-        // ─── PAGINATION ──────────────────────────────────────────────────
-        private void btnPrecedent_Click(object sender, EventArgs e)
+        // ─── PAGINATION ───────────────────────────────────────────────────
+        private void BtnPrecedent_Click(object sender, EventArgs e)
         { if (_pageActuelle > 1) { _pageActuelle--; LoadData(); } }
 
-        private void btnSuivant_Click(object sender, EventArgs e)
+        private void BtnSuivant_Click(object sender, EventArgs e)
         { if (_pageActuelle < _totalPages) { _pageActuelle++; LoadData(); } }
 
-        private void npuPageSize_ValueChanged(object sender, EventArgs e)
+        private void NpuPageSize_ValueChanged(object sender, EventArgs e)
         { _pageActuelle = 1; LoadData(); }
 
         // ─── FILTRES EVENTS ───────────────────────────────────────────────
-        private void txtRecherche_TextChanged(object sender, EventArgs e) => AppliquerFiltres();
-        private void cboFiltreStatut_SelectedIndexChanged(object sender, EventArgs e) => AppliquerFiltres();
-        private void btnReinitFiltres_Click(object sender, EventArgs e)
+        private void TxtRecherche_TextChanged(object sender, EventArgs e) => AppliquerFiltres();
+        private void CboFiltreStatut_SelectedIndexChanged(object sender, EventArgs e) => AppliquerFiltres();
+        private void BtnReinitFiltres_Click(object sender, EventArgs e)
         {
             txtRecherche.Text = "";
             cboFiltreStatut.SelectedIndex = 0;
             AppliquerFiltres();
         }
 
-        // ─── EXPORT EXCEL ────────────────────────────────────────────────
-        private void btnExportExcel_Click(object sender, EventArgs e)
+        // ─── AUTRES ───────────────────────────────────────────────────────
+        private void BtnEmploye_Click(object sender, EventArgs e) { }
+
+        private void PanelMain_Paint(object sender, System.Windows.Forms.PaintEventArgs e) { }
+
+        private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e) { }
+
+        // ─── EXPORT EXCEL ─────────────────────────────────────────────────
+        private void BtnExportExcel_Click(object sender, EventArgs e)
         {
             try
             {
@@ -236,14 +250,10 @@ namespace EXAMEN_SGREE
                     FileName = $"Employes_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx",
                     Title = "Exporter vers Excel"
                 };
-
                 if (saveDialog.ShowDialog() != DialogResult.OK) return;
-
                 ExportToExcel(_listeFiltree, saveDialog.FileName);
-                MessageBox.Show($"Export réussi !\n{saveDialog.FileName}", "Succès",
+                MessageBox.Show($"Export reussi !\n{saveDialog.FileName}", "Succes",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                // Ouvrir le fichier
                 System.Diagnostics.Process.Start(saveDialog.FileName);
             }
             catch (Exception ex)
@@ -255,19 +265,14 @@ namespace EXAMEN_SGREE
 
         private void ExportToExcel(List<Employe> employes, string filePath)
         {
-            // Utilise ClosedXML si disponible, sinon CSV renommé en xlsx basique
-            // Pour utiliser cette fonction, installer : Install-Package ClosedXML
             try
             {
                 using (var workbook = new ClosedXML.Excel.XLWorkbook())
                 {
-                    var ws = workbook.Worksheets.Add("Employés");
-
-                    // En-têtes
-                    string[] headers = { "Matricule", "Nom", "Prénom", "Date Naissance",
-                                         "CNI", "Adresse", "Téléphone", "Email",
+                    var ws = workbook.Worksheets.Add("Employes");
+                    string[] headers = { "Matricule", "Nom", "Prenom", "Date Naissance",
+                                         "CNI", "Adresse", "Telephone", "Email",
                                          "Situation Matri.", "Nbr Enfants" };
-
                     for (int i = 0; i < headers.Length; i++)
                     {
                         ws.Cell(1, i + 1).Value = headers[i];
@@ -276,8 +281,6 @@ namespace EXAMEN_SGREE
                         ws.Cell(1, i + 1).Style.Font.FontColor = ClosedXML.Excel.XLColor.White;
                         ws.Cell(1, i + 1).Style.Alignment.Horizontal = ClosedXML.Excel.XLAlignmentHorizontalValues.Center;
                     }
-
-                    // Données
                     for (int i = 0; i < employes.Count; i++)
                     {
                         var emp = employes[i];
@@ -292,26 +295,19 @@ namespace EXAMEN_SGREE
                         ws.Cell(row, 8).Value = emp.Email;
                         ws.Cell(row, 9).Value = emp.SituationMatrimoniale.ToString();
                         ws.Cell(row, 10).Value = emp.NombreEnfants;
-
-                        // Alternance couleurs lignes
                         if (i % 2 == 0)
-                            ws.Row(row).Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.FromHtml("#F5F5F5");
+                            ws.Row(row).Style.Fill.BackgroundColor =
+                                ClosedXML.Excel.XLColor.FromHtml("#F5F5F5");
                     }
-
-                    // Ajuster largeurs
                     ws.Columns().AdjustToContents();
-
-                    // Bordures
                     var range = ws.Range(1, 1, employes.Count + 1, headers.Length);
                     range.Style.Border.OutsideBorder = ClosedXML.Excel.XLBorderStyleValues.Thin;
                     range.Style.Border.InsideBorder = ClosedXML.Excel.XLBorderStyleValues.Thin;
-
                     workbook.SaveAs(filePath);
                 }
             }
             catch
             {
-                // Fallback CSV si ClosedXML non installé
                 ExportToCsvFallback(employes, filePath);
             }
         }
@@ -319,37 +315,15 @@ namespace EXAMEN_SGREE
         private void ExportToCsvFallback(List<Employe> employes, string filePath)
         {
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine("Matricule;Nom;Prénom;Date Naissance;CNI;Adresse;Téléphone;Email;Situation;Nbr Enfants");
+            sb.AppendLine("Matricule;Nom;Prenom;Date Naissance;CNI;Adresse;Telephone;Email;Situation;Nbr Enfants");
             foreach (var emp in employes)
-                sb.AppendLine($"{emp.Id};{emp.Nom};{emp.Prenom};{emp.DateNaissance:dd/MM/yyyy};" +
-                              $"{emp.CNI};{emp.Adresse};{emp.Telephone};{emp.Email};" +
-                              $"{emp.SituationMatrimoniale};{emp.NombreEnfants}");
-            System.IO.File.WriteAllText(filePath.Replace(".xlsx", ".csv"), sb.ToString(),
+                sb.AppendLine(
+                    $"{emp.Id};{emp.Nom};{emp.Prenom};{emp.DateNaissance:dd/MM/yyyy};" +
+                    $"{emp.CNI};{emp.Adresse};{emp.Telephone};{emp.Email};" +
+                    $"{emp.SituationMatrimoniale};{emp.NombreEnfants}");
+            System.IO.File.WriteAllText(
+                filePath.Replace(".xlsx", ".csv"), sb.ToString(),
                 System.Text.Encoding.UTF8);
         }
-
-        private void btnEmploye_Click(object sender, EventArgs e) { }
-
-        // Remplacez dataGridView1_CellClick_1 par CellDoubleClick
-        private void dataGridView1_CellDoubleClick_1(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0) return;
-            var emp = _service.GetById(
-                Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["Id"].Value));
-            if (emp == null) return;
-
-            using (var fiche = new FicheEmploye(emp))
-                fiche.ShowDialog(this);
-        }
-
-        private void panelMain_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
     }
-    }
+}

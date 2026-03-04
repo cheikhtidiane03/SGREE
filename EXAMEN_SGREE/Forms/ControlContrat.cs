@@ -24,11 +24,13 @@ namespace EXAMEN_SGREE
             InitializeComponent();
         }
 
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         //  LOAD
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         private void ControlContrat_Load(object sender, EventArgs e)
         {
+            if (this.DesignMode) return;
+
             ChargerComboBoxes();
             AppliquerFiltres();
             Effacer();
@@ -37,36 +39,29 @@ namespace EXAMEN_SGREE
 
         private void ChargerComboBoxes()
         {
-            // TypeContrat
             cboTypeContrat.Items.Clear();
             foreach (TypeContrat t in Enum.GetValues(typeof(TypeContrat)))
                 cboTypeContrat.Items.Add(t);
             cboTypeContrat.SelectedIndex = 0;
 
-            // StatutContrat
             cboStatut.Items.Clear();
             foreach (StatutContrat s in Enum.GetValues(typeof(StatutContrat)))
                 cboStatut.Items.Add(s);
             cboStatut.SelectedIndex = 0;
 
-            // Filtre type
             cboFiltreType.Items.Clear();
             cboFiltreType.Items.Add("Tous");
             foreach (TypeContrat t in Enum.GetValues(typeof(TypeContrat)))
                 cboFiltreType.Items.Add(t);
             cboFiltreType.SelectedIndex = 0;
 
-            // Filtre statut
             cboFiltreStatut.Items.Clear();
             cboFiltreStatut.Items.Add("Tous");
             foreach (StatutContrat s in Enum.GetValues(typeof(StatutContrat)))
                 cboFiltreStatut.Items.Add(s);
             cboFiltreStatut.SelectedIndex = 0;
 
-            // Employés
             ChargerEmployes();
-
-            // Employeurs
             ChargerEmployeurs();
         }
 
@@ -77,7 +72,8 @@ namespace EXAMEN_SGREE
             using (var db = new DbContextSgree())
             {
                 db.Employes.OrderBy(e => e.Nom).ToList()
-                  .ForEach(e => cboEmploye.Items.Add(new ComboItem(e.Id, e.Nom + " " + e.Prenom)));
+                  .ForEach(e => cboEmploye.Items.Add(
+                      new ComboItem(e.Id, (e.Nom ?? "") + " " + (e.Prenom ?? ""))));
             }
             cboEmploye.SelectedIndex = 0;
         }
@@ -89,14 +85,14 @@ namespace EXAMEN_SGREE
             using (var db = new DbContextSgree())
             {
                 db.Employeurs.OrderBy(e => e.RaisonSociale).ToList()
-                  .ForEach(e => cboEmployeur.Items.Add(new ComboItem(e.Id, e.RaisonSociale)));
+                  .ForEach(e => cboEmployeur.Items.Add(
+                      new ComboItem(e.Id, e.RaisonSociale ?? "")));
             }
             cboEmployeur.SelectedIndex = 0;
         }
 
         private void CboEmployeur_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Recharger les départements selon l'employeur sélectionné
             cboDepartement.Items.Clear();
             cboDepartement.Items.Add(new ComboItem(0, "-- Selectionnez --"));
             if (cboEmployeur.SelectedItem is ComboItem item && item.Id > 0)
@@ -105,7 +101,8 @@ namespace EXAMEN_SGREE
                 {
                     db.Departements.Where(d => d.EmployeurId == item.Id)
                       .OrderBy(d => d.Libelle).ToList()
-                      .ForEach(d => cboDepartement.Items.Add(new ComboItem(d.Id, d.Libelle)));
+                      .ForEach(d => cboDepartement.Items.Add(
+                          new ComboItem(d.Id, d.Libelle ?? "")));
                 }
             }
             cboDepartement.SelectedIndex = 0;
@@ -113,17 +110,21 @@ namespace EXAMEN_SGREE
 
         private void CboTypeContrat_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // CDI : pas de date de fin
+            // ── BUG 1 CORRIGÉ ──────────────────────────────────────────────
+            // cboTypeContrat.SelectedItem peut être null au démarrage
+            // (avant que ChargerComboBoxes() ait rempli la liste).
+            // On vérifie d'abord que l'item est non-null ET est bien un TypeContrat.
+            if (cboTypeContrat.SelectedItem == null) return;
+
             bool isCDI = cboTypeContrat.SelectedItem is TypeContrat t && t == TypeContrat.CDI;
             dtpDateFin.Enabled = !isCDI;
             lblDateFin.ForeColor = isCDI ? Color.Gray : Color.Black;
             if (isCDI) dtpDateFin.Value = DateTime.Today.AddYears(10);
         }
 
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         //  ALERTES CONTRATS EXPIRANT
-        // ═══════════════════════════════════════════════════════════════
-        // ─── Timer clignotement alerte critique ──────────────────────
+        // ================================================================
         private Timer timerClignotement;
         private bool etatClignotement = false;
 
@@ -131,7 +132,6 @@ namespace EXAMEN_SGREE
         {
             var expirables = service.GetContratsExpirant(30);
 
-            // Arrêter l'ancien timer si existant
             if (timerClignotement != null)
             {
                 timerClignotement.Stop();
@@ -145,20 +145,21 @@ namespace EXAMEN_SGREE
                 return;
             }
 
-            // ── Compter par seuil ─────────────────────────────────────
-            int nbCritiques = expirables.Count(c => c.DateFin.HasValue && (c.DateFin.Value - DateTime.Today).TotalDays <= 7);
-            int nbUrgents = expirables.Count(c => c.DateFin.HasValue && (c.DateFin.Value - DateTime.Today).TotalDays > 7 && (c.DateFin.Value - DateTime.Today).TotalDays <= 15);
-            int nbAttention = expirables.Count(c => c.DateFin.HasValue && (c.DateFin.Value - DateTime.Today).TotalDays > 15);
+            int nbCritiques = expirables.Count(c => c.DateFin.HasValue &&
+                (c.DateFin.Value - DateTime.Today).TotalDays <= 7);
+            int nbUrgents = expirables.Count(c => c.DateFin.HasValue &&
+                (c.DateFin.Value - DateTime.Today).TotalDays > 7 &&
+                (c.DateFin.Value - DateTime.Today).TotalDays <= 15);
+            int nbAttention = expirables.Count(c => c.DateFin.HasValue &&
+                (c.DateFin.Value - DateTime.Today).TotalDays > 15);
 
-            // ── Couleur et icône du panneau selon niveau max ───────────
             if (nbCritiques > 0)
             {
-                panelAlerte.BackColor = Color.FromArgb(255, 220, 220); // rouge clair
-                lblAlerteIcone.Text = "⛔";
+                panelAlerte.BackColor = Color.FromArgb(255, 220, 220);
+                lblAlerteIcone.Text = "!";          // ── BUG 2 CORRIGÉ ──
                 lblAlerteIcone.ForeColor = Color.FromArgb(180, 0, 0);
                 lblAlerteTexte.ForeColor = Color.FromArgb(140, 0, 0);
 
-                // Clignotement pour les urgences critiques
                 timerClignotement = new Timer { Interval = 800 };
                 timerClignotement.Tick += (s, ev) =>
                 {
@@ -171,29 +172,27 @@ namespace EXAMEN_SGREE
             }
             else if (nbUrgents > 0)
             {
-                panelAlerte.BackColor = Color.FromArgb(255, 237, 200); // orange clair
-                lblAlerteIcone.Text = "⚠";
+                panelAlerte.BackColor = Color.FromArgb(255, 237, 200);
+                lblAlerteIcone.Text = "!";       // ── BUG 2 CORRIGÉ ──
                 lblAlerteIcone.ForeColor = Color.FromArgb(180, 90, 0);
                 lblAlerteTexte.ForeColor = Color.FromArgb(140, 70, 0);
             }
             else
             {
-                panelAlerte.BackColor = Color.FromArgb(255, 252, 210); // jaune clair
-                lblAlerteIcone.Text = "ℹ";
+                panelAlerte.BackColor = Color.FromArgb(255, 252, 210);
+                lblAlerteIcone.Text = "i";       // ── BUG 2 CORRIGÉ ──
                 lblAlerteIcone.ForeColor = Color.FromArgb(130, 110, 0);
                 lblAlerteTexte.ForeColor = Color.FromArgb(100, 85, 0);
             }
 
-            // ── Texte résumé avec badges ──────────────────────────────
             string resume = expirables.Count + " contrat(s) expirent dans les 30 prochains jours";
-            var parties = new System.Collections.Generic.List<string>();
-            if (nbCritiques > 0) parties.Add(nbCritiques + " critique(s) ≤ 7j");
-            if (nbUrgents > 0) parties.Add(nbUrgents + " urgent(s) ≤ 15j");
-            if (nbAttention > 0) parties.Add(nbAttention + " à surveiller");
+            var parties = new List<string>();
+            if (nbCritiques > 0) parties.Add(nbCritiques + " critique(s) <= 7j");
+            if (nbUrgents > 0) parties.Add(nbUrgents + " urgent(s) <= 15j");
+            if (nbAttention > 0) parties.Add(nbAttention + " a surveiller");
             if (parties.Count > 0) resume += "  [" + string.Join("  |  ", parties) + "]";
             lblAlerteTexte.Text = resume;
 
-            // ── Données grille ────────────────────────────────────────
             var donnees = expirables.Select(c => new
             {
                 Urgence = GetUrgenceLabel(c),
@@ -202,7 +201,8 @@ namespace EXAMEN_SGREE
                 Employeur = c.Employeur != null ? c.Employeur.RaisonSociale : "-",
                 Type = c.TypeContrat.ToString(),
                 DateFin = c.DateFin,
-                JoursRestants = c.DateFin.HasValue ? (int)(c.DateFin.Value - DateTime.Today).TotalDays : 0
+                JoursRestants = c.DateFin.HasValue
+                    ? (int)(c.DateFin.Value - DateTime.Today).TotalDays : 0
             })
             .OrderBy(r => r.JoursRestants)
             .ToList();
@@ -210,28 +210,29 @@ namespace EXAMEN_SGREE
             dgvAlertes.DataSource = null;
             dgvAlertes.DataSource = donnees;
 
-            if (dgvAlertes.Columns.Count > 0)
-            {
-                dgvAlertes.Columns["Urgence"].HeaderText = "Niveau";
-                dgvAlertes.Columns["Urgence"].Width = 90;
-                dgvAlertes.Columns["Urgence"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                dgvAlertes.Columns["Numero"].HeaderText = "N° Contrat";
-                dgvAlertes.Columns["Employe"].HeaderText = "Employe";
-                dgvAlertes.Columns["Employeur"].HeaderText = "Employeur";
-                dgvAlertes.Columns["Type"].HeaderText = "Type";
-                dgvAlertes.Columns["DateFin"].HeaderText = "Expire le";
-                dgvAlertes.Columns["DateFin"].DefaultCellStyle.Format = "dd/MM/yyyy";
-                dgvAlertes.Columns["DateFin"].Width = 90;
-                dgvAlertes.Columns["DateFin"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                dgvAlertes.Columns["JoursRestants"].HeaderText = "Jours restants";
-                dgvAlertes.Columns["JoursRestants"].Width = 100;
-                dgvAlertes.Columns["JoursRestants"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                dgvAlertes.Columns["JoursRestants"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                dgvAlertes.Columns["JoursRestants"].DefaultCellStyle.Font = new Font("Century Gothic", 9F, FontStyle.Bold);
-            }
+            //if (dgvAlertes.Columns.Count > 0)
+            //{
+            //    dgvAlertes.Columns["Urgence"].HeaderText = "Niveau";
+            //    dgvAlertes.Columns["Urgence"].Width = 90;
+            //    dgvAlertes.Columns["Urgence"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            //    dgvAlertes.Columns["Numero"].HeaderText = "N Contrat";
+            //    dgvAlertes.Columns["Employe"].HeaderText = "Employe";
+            //    dgvAlertes.Columns["Employeur"].HeaderText = "Employeur";
+            //    dgvAlertes.Columns["Type"].HeaderText = "Type";
+            //    dgvAlertes.Columns["DateFin"].HeaderText = "Expire le";
+            //    dgvAlertes.Columns["DateFin"].DefaultCellStyle.Format = "dd/MM/yyyy";
+            //    dgvAlertes.Columns["DateFin"].Width = 90;
+            //    dgvAlertes.Columns["DateFin"].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            //    dgvAlertes.Columns["JoursRestants"].HeaderText = "Jours restants";
+            //    dgvAlertes.Columns["JoursRestants"].Width = 100;
+            //    dgvAlertes.Columns["JoursRestants"].AutoSizeMode =
+            //        DataGridViewAutoSizeColumnMode.None;
+            //    dgvAlertes.Columns["JoursRestants"].DefaultCellStyle.Alignment =
+            //        DataGridViewContentAlignment.MiddleCenter;
+            //    dgvAlertes.Columns["JoursRestants"].DefaultCellStyle.Font =
+            //        new Font("Century Gothic", 9F, FontStyle.Bold);
+            //}
 
-            // ── Couleur et tooltip par ligne ──────────────────────────
-            var toolTip = new ToolTip { ShowAlways = true };
             foreach (DataGridViewRow row in dgvAlertes.Rows)
             {
                 if (row.Cells["JoursRestants"].Value == null) continue;
@@ -242,26 +243,21 @@ namespace EXAMEN_SGREE
                     row.DefaultCellStyle.BackColor = Color.FromArgb(255, 180, 180);
                     row.DefaultCellStyle.ForeColor = Color.FromArgb(140, 0, 0);
                     row.DefaultCellStyle.Font = new Font("Century Gothic", 9F, FontStyle.Bold);
+                    row.Cells["JoursRestants"].Style.BackColor = Color.FromArgb(220, 50, 50);
                 }
                 else if (jours <= 15)
                 {
                     row.DefaultCellStyle.BackColor = Color.FromArgb(255, 220, 160);
                     row.DefaultCellStyle.ForeColor = Color.FromArgb(120, 60, 0);
                     row.DefaultCellStyle.Font = new Font("Century Gothic", 9F, FontStyle.Bold);
+                    row.Cells["JoursRestants"].Style.BackColor = Color.FromArgb(220, 140, 30);
                 }
                 else
                 {
                     row.DefaultCellStyle.BackColor = Color.FromArgb(255, 252, 180);
                     row.DefaultCellStyle.ForeColor = Color.FromArgb(80, 70, 0);
-                }
-
-                // Cellule "Jours restants" : fond plus intense
-                if (jours <= 7)
-                    row.Cells["JoursRestants"].Style.BackColor = Color.FromArgb(220, 50, 50);
-                else if (jours <= 15)
-                    row.Cells["JoursRestants"].Style.BackColor = Color.FromArgb(220, 140, 30);
-                else
                     row.Cells["JoursRestants"].Style.BackColor = Color.FromArgb(200, 180, 30);
+                }
 
                 row.Cells["JoursRestants"].Style.ForeColor = Color.White;
             }
@@ -273,14 +269,14 @@ namespace EXAMEN_SGREE
         {
             if (!c.DateFin.HasValue) return "-";
             int jours = (int)(c.DateFin.Value - DateTime.Today).TotalDays;
-            if (jours <= 7) return "⛔ Critique";
-            if (jours <= 15) return "⚠ Urgent";
-            return "ℹ Attention";
+            if (jours <= 7) return "Critique";
+            if (jours <= 15) return "Urgent";
+            return "Attention";
         }
 
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         //  FILTRES
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         private void AppliquerFiltres()
         {
             var tous = service.GetAll();
@@ -305,9 +301,9 @@ namespace EXAMEN_SGREE
             LoadData();
         }
 
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         //  CHARGER DONNÉES
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         private void LoadData()
         {
             totalPages = (int)Math.Ceiling((double)listeFiltree.Count / PageSize);
@@ -343,7 +339,7 @@ namespace EXAMEN_SGREE
             var cols = dataGridView1.Columns;
             if (cols.Count == 0) return;
             if (cols.Contains("Id")) cols["Id"].Visible = false;
-            if (cols.Contains("NumeroContrat")) cols["NumeroContrat"].HeaderText = "N° Contrat";
+            if (cols.Contains("NumeroContrat")) cols["NumeroContrat"].HeaderText = "N Contrat";
             if (cols.Contains("Type")) cols["Type"].HeaderText = "Type";
             if (cols.Contains("Employe")) cols["Employe"].HeaderText = "Employe";
             if (cols.Contains("Employeur")) cols["Employeur"].HeaderText = "Employeur";
@@ -354,12 +350,21 @@ namespace EXAMEN_SGREE
             if (cols.Contains("Salaire")) { cols["Salaire"].HeaderText = "Salaire (FCFA)"; cols["Salaire"].DefaultCellStyle.Format = "N0"; }
             if (cols.Contains("Statut")) cols["Statut"].HeaderText = "Statut";
 
-            // Colorier les lignes selon statut et expiration
-            foreach (DataGridViewRow row in dataGridView1.Rows)
+            // ── BUG 3 CORRIGÉ ─────────────────────────────────────────────
+            // row.Index peut dépasser la taille de la page courante
+            // quand dataGridView1 a une ligne fantôme (AllowUserToAddRows=true).
+            // On utilise un index explicite plutôt que row.Index.
+            var pageList = listeFiltree
+                .Skip((pageActuelle - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
+
+            for (int i = 0; i < dataGridView1.Rows.Count; i++)
             {
+                var row = dataGridView1.Rows[i];
                 string statut = row.Cells["Statut"].Value?.ToString() ?? string.Empty;
-                var contrat = listeFiltree.Skip((pageActuelle - 1) * PageSize).Take(PageSize).ElementAtOrDefault(row.Index);
-                if (contrat == null) continue;
+                if (i >= pageList.Count) continue;          // ligne fantôme ou débordement
+                var contrat = pageList[i];
 
                 if (statut == StatutContrat.Resilie.ToString())
                     row.DefaultCellStyle.BackColor = Color.FromArgb(255, 220, 220);
@@ -367,18 +372,18 @@ namespace EXAMEN_SGREE
                     row.DefaultCellStyle.BackColor = Color.FromArgb(220, 220, 220);
                 else if (statut == StatutContrat.Suspendu.ToString())
                     row.DefaultCellStyle.BackColor = Color.FromArgb(255, 240, 200);
-                else if (contrat.DateFin.HasValue && contrat.DateFin.Value <= DateTime.Today.AddDays(30))
-                    row.DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200); // expiration proche
+                else if (contrat.DateFin.HasValue &&
+                         contrat.DateFin.Value <= DateTime.Today.AddDays(30))
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200);
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         //  EFFACER
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         private void Effacer()
         {
             selectedId = 0;
-            lblNumeroVal.Text = "(genere automatiquement)";
             cboTypeContrat.SelectedIndex = 0;
             cboEmploye.SelectedIndex = 0;
             cboEmployeur.SelectedIndex = 0;
@@ -395,13 +400,15 @@ namespace EXAMEN_SGREE
 
         private const decimal SMIG = 60000m;
 
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         //  SÉLECTION GRILLE
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         private void DataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
-            int id = Convert.ToInt32(dataGridView1.Rows[e.RowIndex].Cells["Id"].Value);
+            var idCell = dataGridView1.Rows[e.RowIndex].Cells["Id"].Value;
+            if (idCell == null) return;
+            int id = Convert.ToInt32(idCell);
             var c = service.GetById(id);
             if (c == null) return;
             PopulerFormulaire(c);
@@ -410,26 +417,19 @@ namespace EXAMEN_SGREE
         private void PopulerFormulaire(Contrat c)
         {
             selectedId = c.Id;
-            lblNumeroVal.Text = c.NumeroContrat;
             cboTypeContrat.SelectedItem = c.TypeContrat;
             nudSalaire.Value = c.SalaireBase;
-            txtPoste.Text = c.Poste;
+            txtPoste.Text = c.Poste ?? string.Empty;
             dtpDateDebut.Value = c.DateDebut;
 
-            // CDI : date fin fictive
             bool isCDI = c.TypeContrat == TypeContrat.CDI;
             dtpDateFin.Enabled = !isCDI;
             dtpDateFin.Value = c.DateFin ?? DateTime.Today.AddYears(10);
 
             cboStatut.SelectedItem = c.Statut;
 
-            // Employé
             SelectComboItem(cboEmploye, c.EmployeId);
-
-            // Employeur (déclenche le rechargement des départements)
             SelectComboItem(cboEmployeur, c.EmployeurId);
-
-            // Département (après rechargement)
             SelectComboItem(cboDepartement, c.DepartementId);
         }
 
@@ -442,16 +442,15 @@ namespace EXAMEN_SGREE
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         //  BUILD CONTRAT FROM FORM
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         private Contrat GetFromForm()
         {
             bool isCDI = cboTypeContrat.SelectedItem is TypeContrat t && t == TypeContrat.CDI;
             return new Contrat
             {
                 Id = selectedId,
-                NumeroContrat = lblNumeroVal.Text,
                 TypeContrat = cboTypeContrat.SelectedItem is TypeContrat tc ? tc : TypeContrat.CDI,
                 DateDebut = dtpDateDebut.Value,
                 DateFin = isCDI ? (DateTime?)null : dtpDateFin.Value,
@@ -464,9 +463,9 @@ namespace EXAMEN_SGREE
             };
         }
 
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         //  CRUD
-        // ═══════════════════════════════════════════════════════════════
+        // ================================================================
         private void BtnEnregistrer_Click(object sender, EventArgs e)
         {
             var contrat = GetFromForm();
@@ -497,7 +496,8 @@ namespace EXAMEN_SGREE
         {
             if (selectedId == 0)
             { MessageBox.Show("Selectionnez un contrat.", "Avertissement", MessageBoxButtons.OK, MessageBoxIcon.Warning); return; }
-            if (MessageBox.Show("Supprimer ce contrat ?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Supprimer ce contrat ?", "Confirmation",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 service.Delete(selectedId);
                 AppliquerFiltres();
@@ -509,7 +509,9 @@ namespace EXAMEN_SGREE
 
         private void BtnAnnuler_Click(object sender, EventArgs e) => Effacer();
 
-        // ─── Renouvellement ───────────────────────────────────────────
+        // ================================================================
+        //  RENOUVELLEMENT
+        // ================================================================
         private void BtnRenouveler_Click(object sender, EventArgs e)
         {
             if (selectedId == 0)
@@ -526,7 +528,9 @@ namespace EXAMEN_SGREE
             }
         }
 
-        // ─── Résiliation ──────────────────────────────────────────────
+        // ================================================================
+        //  RÉSILIATION
+        // ================================================================
         private void BtnResilier_Click(object sender, EventArgs e)
         {
             if (selectedId == 0)
@@ -545,10 +549,6 @@ namespace EXAMEN_SGREE
             MessageBox.Show(res.Message, "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        /// <summary>
-        /// Remplace Microsoft.VisualBasic.Interaction.InputBox
-        /// par un formulaire WinForms natif.
-        /// </summary>
         private string DemanderMotif(string prompt, string titre)
         {
             string result = string.Empty;
@@ -595,7 +595,9 @@ namespace EXAMEN_SGREE
             return result;
         }
 
-        // ─── Pagination ───────────────────────────────────────────────
+        // ================================================================
+        //  PAGINATION
+        // ================================================================
         private void BtnPrecedent_Click(object sender, EventArgs e)
         { if (pageActuelle > 1) { pageActuelle--; LoadData(); } }
 
@@ -605,42 +607,69 @@ namespace EXAMEN_SGREE
         private void NpuPageSize_ValueChanged(object sender, EventArgs e)
         { pageActuelle = 1; LoadData(); }
 
-        private void TxtRecherche_TextChanged(object sender, EventArgs e) => AppliquerFiltres();
-        private void CboFiltreType_SelectedIndexChanged(object sender, EventArgs e) => AppliquerFiltres();
-        private void CboFiltreStatut_SelectedIndexChanged(object sender, EventArgs e) => AppliquerFiltres();
+        private void TxtRecherche_TextChanged(object sender, EventArgs e)
+            => AppliquerFiltres();
+
+        private void CboFiltreType_SelectedIndexChanged(object sender, EventArgs e)
+            => AppliquerFiltres();
+
+        private void CboFiltreStatut_SelectedIndexChanged(object sender, EventArgs e)
+            => AppliquerFiltres();
+
         private void BtnReinitFiltres_Click(object sender, EventArgs e)
-        { txtRecherche.Text = string.Empty; cboFiltreType.SelectedIndex = 0; cboFiltreStatut.SelectedIndex = 0; }
+        {
+            txtRecherche.Text = string.Empty;
+            cboFiltreType.SelectedIndex = 0;
+            cboFiltreStatut.SelectedIndex = 0;
+        }
 
         private void BtnContrat_Click(object sender, EventArgs e) { }
 
         private void BtnMasquerAlerte_Click(object sender, EventArgs e)
         { panelAlerte.Visible = false; }
 
+        // ================================================================
+        //  EXPORT CSV
+        // ================================================================
         private void BtnExportCsv_Click(object sender, EventArgs e)
         {
             try
             {
-                var dlg = new SaveFileDialog { Filter = "CSV|*.csv", FileName = "Contrats_" + DateTime.Now.ToString("yyyyMMdd") + ".csv" };
+                var dlg = new SaveFileDialog
+                {
+                    Filter = "CSV|*.csv",
+                    FileName = "Contrats_" + DateTime.Now.ToString("yyyyMMdd") + ".csv"
+                };
                 if (dlg.ShowDialog() != DialogResult.OK) return;
+
                 var sb = new System.Text.StringBuilder();
                 sb.AppendLine("Numero;Type;Employe;Employeur;Departement;Poste;Debut;Fin;Salaire;Statut");
                 foreach (var c in listeFiltree)
-                    sb.AppendLine(c.NumeroContrat + ";" + c.TypeContrat + ";" +
+                    sb.AppendLine(
+                        c.NumeroContrat + ";" +
+                        c.TypeContrat + ";" +
                         (c.Employe != null ? c.Employe.Nom + " " + c.Employe.Prenom : "") + ";" +
                         (c.Employeur != null ? c.Employeur.RaisonSociale : "") + ";" +
                         (c.Departement != null ? c.Departement.Libelle : "") + ";" +
-                        c.Poste + ";" + c.DateDebut.ToString("dd/MM/yyyy") + ";" +
+                        (c.Poste ?? "") + ";" +
+                        c.DateDebut.ToString("dd/MM/yyyy") + ";" +
                         (c.DateFin.HasValue ? c.DateFin.Value.ToString("dd/MM/yyyy") : "CDI") + ";" +
-                        c.SalaireBase.ToString("N0") + ";" + c.Statut);
+                        c.SalaireBase.ToString("N0") + ";" +
+                        c.Statut);
+
                 System.IO.File.WriteAllText(dlg.FileName, sb.ToString(), System.Text.Encoding.UTF8);
                 MessageBox.Show("Export reussi !", "Succes", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
-            { MessageBox.Show(ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error); }
+            {
+                MessageBox.Show(ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 
-    // ─── Helper ComboBox item avec ID ─────────────────────────────────────
+    // ────────────────────────────────────────────────────────────────────
+    //  Helper ComboBox item avec ID
+    // ────────────────────────────────────────────────────────────────────
     public class ComboItem
     {
         public int Id { get; set; }

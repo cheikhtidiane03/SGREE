@@ -24,17 +24,17 @@ namespace EXAMEN_SGREE
 
         private void ControlEmployeur_Load(object sender, EventArgs e)
         {
+            if (this.DesignMode) return;
+
             cboStatut.Items.Clear();
             foreach (StatutEmployeur s in Enum.GetValues(typeof(StatutEmployeur)))
                 cboStatut.Items.Add(s);
             cboStatut.SelectedIndex = 0;
-
             cboFiltreStatut.Items.Clear();
             cboFiltreStatut.Items.Add("Tous");
             foreach (StatutEmployeur s in Enum.GetValues(typeof(StatutEmployeur)))
                 cboFiltreStatut.Items.Add(s);
             cboFiltreStatut.SelectedIndex = 0;
-
             AppliquerFiltres();
             Effacer();
         }
@@ -286,6 +286,11 @@ namespace EXAMEN_SGREE
             {
                 MessageBox.Show(ex.Message, "Erreur", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void panelMain_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

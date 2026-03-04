@@ -74,7 +74,7 @@
             this.btnEmploye.TabIndex = 0;
             this.btnEmploye.Text = "Gestion des Employés";
             this.btnEmploye.UseVisualStyleBackColor = false;
-            this.btnEmploye.Click += new System.EventHandler(this.btnEmploye_Click);
+            this.btnEmploye.Click += new System.EventHandler(this.BtnEmploye_Click);
             // 
             // label1
             // 
@@ -240,7 +240,7 @@
             this.btnEnregistrer.TabIndex = 18;
             this.btnEnregistrer.Text = "Enregistrer";
             this.btnEnregistrer.UseVisualStyleBackColor = false;
-            this.btnEnregistrer.Click += new System.EventHandler(this.btnEnregistrer_Click_1);
+            this.btnEnregistrer.Click += new System.EventHandler(this.BtnEnregistrer_Click);
             // 
             // btnAnnuler
             // 
@@ -251,7 +251,7 @@
             this.btnAnnuler.TabIndex = 19;
             this.btnAnnuler.Text = "Annuler";
             this.btnAnnuler.UseVisualStyleBackColor = false;
-            this.btnAnnuler.Click += new System.EventHandler(this.btnAnnuler_Click_1);
+            this.btnAnnuler.Click += new System.EventHandler(this.BtnAnnuler_Click);
             // 
             // btnModifier
             // 
@@ -262,7 +262,7 @@
             this.btnModifier.TabIndex = 20;
             this.btnModifier.Text = "Modifier";
             this.btnModifier.UseVisualStyleBackColor = false;
-            this.btnModifier.Click += new System.EventHandler(this.btnModifier_Click_1);
+            this.btnModifier.Click += new System.EventHandler(this.BtnModifier_Click);
             // 
             // btnSupprimer
             // 
@@ -274,7 +274,7 @@
             this.btnSupprimer.TabIndex = 21;
             this.btnSupprimer.Text = "Supprimer";
             this.btnSupprimer.UseVisualStyleBackColor = false;
-            this.btnSupprimer.Click += new System.EventHandler(this.btnSupprimer_Click_1);
+            this.btnSupprimer.Click += new System.EventHandler(this.BtnSupprimer_Click);
             // 
             // panelFiltres
             // 
@@ -305,7 +305,7 @@
             this.txtRecherche.Name = "txtRecherche";
             this.txtRecherche.Size = new System.Drawing.Size(180, 26);
             this.txtRecherche.TabIndex = 1;
-            this.txtRecherche.TextChanged += new System.EventHandler(this.txtRecherche_TextChanged);
+            this.txtRecherche.TextChanged += new System.EventHandler(this.TxtRecherche_TextChanged);
             // 
             // lblFiltreStatut
             // 
@@ -323,7 +323,7 @@
             this.cboFiltreStatut.Name = "cboFiltreStatut";
             this.cboFiltreStatut.Size = new System.Drawing.Size(160, 28);
             this.cboFiltreStatut.TabIndex = 3;
-            this.cboFiltreStatut.SelectedIndexChanged += new System.EventHandler(this.cboFiltreStatut_SelectedIndexChanged);
+            this.cboFiltreStatut.SelectedIndexChanged += new System.EventHandler(this.CboFiltreStatut_SelectedIndexChanged);
             // 
             // btnReinitFiltres
             // 
@@ -336,7 +336,7 @@
             this.btnReinitFiltres.TabIndex = 4;
             this.btnReinitFiltres.Text = "↺ Réinitialiser";
             this.btnReinitFiltres.UseVisualStyleBackColor = false;
-            this.btnReinitFiltres.Click += new System.EventHandler(this.btnReinitFiltres_Click);
+            this.btnReinitFiltres.Click += new System.EventHandler(this.BtnReinitFiltres_Click);
             // 
             // dataGridView1
             // 
@@ -353,9 +353,9 @@
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(1148, 348);
             this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick_1);
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-            this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellDoubleClick_1);
+            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellClick);
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentClick);
+            this.dataGridView1.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellDoubleClick);
             // 
             // panelPagination
             // 
@@ -405,7 +405,7 @@
             this.btnPrecedent.Size = new System.Drawing.Size(90, 30);
             this.btnPrecedent.TabIndex = 2;
             this.btnPrecedent.Text = "◄ Préc.";
-            this.btnPrecedent.Click += new System.EventHandler(this.btnPrecedent_Click);
+            this.btnPrecedent.Click += new System.EventHandler(this.BtnPrecedent_Click);
             // 
             // lblPage
             // 
@@ -424,7 +424,7 @@
             this.btnSuivant.Size = new System.Drawing.Size(90, 30);
             this.btnSuivant.TabIndex = 4;
             this.btnSuivant.Text = "Suiv. ►";
-            this.btnSuivant.Click += new System.EventHandler(this.btnSuivant_Click);
+            this.btnSuivant.Click += new System.EventHandler(this.BtnSuivant_Click);
             // 
             // btnExportExcel
             // 
@@ -437,7 +437,7 @@
             this.btnExportExcel.TabIndex = 5;
             this.btnExportExcel.Text = "📥 Export CSV";
             this.btnExportExcel.UseVisualStyleBackColor = false;
-            this.btnExportExcel.Click += new System.EventHandler(this.btnExportExcel_Click);
+            this.btnExportExcel.Click += new System.EventHandler(this.BtnExportExcel_Click);
             // 
             // panelMain
             // 
@@ -469,7 +469,7 @@
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(1148, 390);
             this.panelMain.TabIndex = 1;
-            this.panelMain.Paint += new System.Windows.Forms.PaintEventHandler(this.panelMain_Paint);
+            this.panelMain.Paint += new System.Windows.Forms.PaintEventHandler(this.PanelMain_Paint);
             // 
             // panelBottom
             // 

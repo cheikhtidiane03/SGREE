@@ -98,41 +98,59 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ControlContrat.cs">
+    <Compile Include="Forms\Crystalreportclasses.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Forms\Crystalreportclasses.Designer.cs">
+      <DependentUpon>Crystalreportclasses.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dashboardmodels.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Dashboardmodels.Designer.cs">
+      <DependentUpon>Dashboardmodels.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Databasehelper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Databasehelper.Designer.cs">
+      <DependentUpon>Databasehelper.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ControlContrat.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlContrat.Designer.cs">
+    <Compile Include="Forms\ControlContrat.Designer.cs">
       <DependentUpon>ControlContrat.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlDashboard.cs">
+    <Compile Include="Forms\ControlDashboard.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlDashboard.Designer.cs">
+    <Compile Include="Forms\ControlDashboard.Designer.cs">
       <DependentUpon>ControlDashboard.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlEmploye.cs">
+    <Compile Include="Forms\ControlEmploye.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlEmploye.Designer.cs">
+    <Compile Include="Forms\ControlEmploye.Designer.cs">
       <DependentUpon>ControlEmploye.cs</DependentUpon>
     </Compile>
-    <Compile Include="ControlEmployeur.cs">
+    <Compile Include="Forms\ControlEmployeur.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ControlEmployeur.Designer.cs">
+    <Compile Include="Forms\ControlEmployeur.Designer.cs">
       <DependentUpon>ControlEmployeur.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\DbContextSgree.cs" />
-    <Compile Include="Dsstatsemployeur.cs">
+    <Compile Include="Forms\Dsstatsemployeur.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Dsstatsemployeur.Designer.cs">
+    <Compile Include="Forms\Dsstatsemployeur.Designer.cs">
       <DependentUpon>Dsstatsemployeur.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ficheemployeur.cs">
+    <Compile Include="Forms\Ficheemployeur.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Ficheemployeur.Designer.cs">
+    <Compile Include="Forms\Ficheemployeur.Designer.cs">
       <DependentUpon>Ficheemployeur.cs</DependentUpon>
     </Compile>
     <Compile Include="Enums\CategorieCompetence.cs" />
@@ -141,23 +159,29 @@
     <Compile Include="Enums\StatutContrat.cs" />
     <Compile Include="Enums\StatutEmployeur.cs" />
     <Compile Include="Enums\TypeContrat.cs" />
-    <Compile Include="FicheEmploye.cs">
+    <Compile Include="Forms\FicheEmploye.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FicheEmploye.Designer.cs">
+    <Compile Include="Forms\FicheEmploye.Designer.cs">
       <DependentUpon>FicheEmploye.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="Forms\Form1.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
+    <Compile Include="Forms\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Formrenouvellement.cs">
+    <Compile Include="Forms\Formrenouvellement.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Formrenouvellement.Designer.cs">
+    <Compile Include="Forms\Formrenouvellement.Designer.cs">
       <DependentUpon>Formrenouvellement.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Frmperiodeselection.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Frmperiodeselection.Designer.cs">
+      <DependentUpon>Frmperiodeselection.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202602261408221_InitialCreate.cs" />
     <Compile Include="Migrations\202602261408221_InitialCreate.Designer.cs">
@@ -191,33 +215,44 @@
     <Compile Include="Services\DepartementService.cs" />
     <Compile Include="Services\EmployeService.cs" />
     <Compile Include="Services\EmployeurService.cs" />
-    <Compile Include="Services\RechercheGlobaleService.cs" />
-    <EmbeddedResource Include="ControlContrat.resx">
+    <EmbeddedResource Include="Forms\Crystalreportclasses.resx">
+      <DependentUpon>Crystalreportclasses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dashboardmodels.resx">
+      <DependentUpon>Dashboardmodels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Databasehelper.resx">
+      <DependentUpon>Databasehelper.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ControlContrat.resx">
       <DependentUpon>ControlContrat.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlDashboard.resx">
+    <EmbeddedResource Include="Forms\ControlDashboard.resx">
       <DependentUpon>ControlDashboard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlEmploye.resx">
+    <EmbeddedResource Include="Forms\ControlEmploye.resx">
       <DependentUpon>ControlEmploye.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ControlEmployeur.resx">
+    <EmbeddedResource Include="Forms\ControlEmployeur.resx">
       <DependentUpon>ControlEmployeur.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Dsstatsemployeur.resx">
+    <EmbeddedResource Include="Forms\Dsstatsemployeur.resx">
       <DependentUpon>Dsstatsemployeur.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Ficheemployeur.resx">
+    <EmbeddedResource Include="Forms\Ficheemployeur.resx">
       <DependentUpon>Ficheemployeur.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FicheEmploye.resx">
+    <EmbeddedResource Include="Forms\FicheEmploye.resx">
       <DependentUpon>FicheEmploye.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Form1.resx">
+    <EmbeddedResource Include="Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Formrenouvellement.resx">
+    <EmbeddedResource Include="Forms\Formrenouvellement.resx">
       <DependentUpon>Formrenouvellement.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Frmperiodeselection.resx">
+      <DependentUpon>Frmperiodeselection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202602261408221_InitialCreate.resx">
       <DependentUpon>202602261408221_InitialCreate.cs</DependentUpon>
@@ -259,7 +294,6 @@
     <None Include="Resources\959fea7c-d0f4-439b-afa7-2d84d0c0d14f.png" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Forms\" />
     <Folder Include="Reports\" />
   </ItemGroup>
   <ItemGroup>

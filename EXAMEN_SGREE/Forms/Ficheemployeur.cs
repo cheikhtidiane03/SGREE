@@ -38,9 +38,10 @@ namespace EXAMEN_SGREE
 
         private void FicheEmployeur_Load(object sender, EventArgs e)
         {
+            if (this.DesignMode) return;
+
             this.Text = "Fiche Employeur - " + employeur.RaisonSociale;
             lblTitre.Text = "Fiche Employeur : " + employeur.RaisonSociale;
-
             InitTabInfos();
             ChargerInfos();
             ChargerDepartements();
@@ -394,5 +395,10 @@ namespace EXAMEN_SGREE
         private void BtnShowType_Click(object sender, EventArgs e) => ShowChart(true);
         private void BtnShowDept_Click(object sender, EventArgs e) => ShowChart(false);
         private void BtnFermer_Click(object sender, EventArgs e) => this.Close();
+
+        private void panelHeader_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }

@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace EXAMEN_SGREE
+{
+    public partial class Dashboardmodels : Form
+    {
+        public Dashboardmodels()
+        {
+            InitializeComponent();
+        }
+
+        private void Dashboardmodels_Load(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
