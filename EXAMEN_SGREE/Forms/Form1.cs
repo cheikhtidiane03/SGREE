@@ -14,26 +14,34 @@ namespace EXAMEN_SGREE
         private void Form1_Load(object sender, EventArgs e)
         {
             WindowState = FormWindowState.Maximized;
-            AfficherControl("employeur");
+
+            // ── Dashboard affiché par défaut au lancement ───────────────
+            AfficherControl("dashboard");
         }
 
+        // ================================================================
+        //  Méthode centrale de navigation
+        // ================================================================
         private void AfficherControl(string nom)
         {
             if (nom == null) nom = string.Empty;
-            var key = nom.ToLowerInvariant();
+            string key = nom.ToLowerInvariant();
 
+            // Visibilité
             if (controlEmployeur1 != null) controlEmployeur1.Visible = key == "employeur";
             if (controlEmploye1 != null) controlEmploye1.Visible = key == "employe";
             if (controlContrat1 != null) controlContrat1.Visible = key == "contrat";
             if (controlDashboard1 != null) controlDashboard1.Visible = key == "dashboard";
 
+            // Amener au premier plan
             if (key == "employeur" && controlEmployeur1 != null) controlEmployeur1.BringToFront();
             if (key == "employe" && controlEmploye1 != null) controlEmploye1.BringToFront();
             if (key == "contrat" && controlContrat1 != null) controlContrat1.BringToFront();
             if (key == "dashboard" && controlDashboard1 != null) controlDashboard1.BringToFront();
 
-            var active = Color.FromArgb(0, 90, 160);
-            var normal = Color.FromArgb(0, 122, 204);
+            // Couleur bouton actif / normal
+            Color active = Color.FromArgb(0, 90, 160);
+            Color normal = Color.FromArgb(0, 122, 204);
 
             if (btnEmployeur != null) btnEmployeur.BackColor = key == "employeur" ? active : normal;
             if (btnEmploye != null) btnEmploye.BackColor = key == "employe" ? active : normal;
@@ -41,7 +49,9 @@ namespace EXAMEN_SGREE
             if (btnDashboard != null) btnDashboard.BackColor = key == "dashboard" ? active : normal;
         }
 
-        // ─── Handlers PascalCase ─────────────────────────────────────────
+        // ================================================================
+        //  Handlers — PascalCase obligatoire
+        // ================================================================
         private void BtnEmployeur_Click(object sender, EventArgs e)
             => AfficherControl("employeur");
 
@@ -51,7 +61,11 @@ namespace EXAMEN_SGREE
         private void BtnContrat_Click(object sender, EventArgs e)
             => AfficherControl("contrat");
 
+        // PascalCase corrigé (était btnDashboard_Click)
         private void BtnDashboard_Click(object sender, EventArgs e)
             => AfficherControl("dashboard");
+
+        // PascalCase corrigé (était controlContrat1_Load)
+        private void ControlContrat1_Load(object sender, EventArgs e) { }
     }
 }

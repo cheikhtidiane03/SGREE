@@ -1,7 +1,7 @@
 ﻿using EXAMEN_SGREE.Enums;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SGREE.Models
 {
@@ -9,6 +9,7 @@ namespace SGREE.Models
     {
         [Key]
         public int Id { get; set; }
+
         public string Nom { get; set; }
         public string Prenom { get; set; }
         public DateTime DateNaissance { get; set; }
@@ -18,5 +19,13 @@ namespace SGREE.Models
         public string Email { get; set; }
         public SituationMatrimoniale SituationMatrimoniale { get; set; }
         public int NombreEnfants { get; set; }
+
+
+        /// <summary>
+        /// Photo de l'employé stockée en binaire (VARBINARY(MAX) en base).
+        /// Nullable — la photo est optionnelle.
+        /// </summary>
+        [Column(TypeName = "image")]
+        public byte[] Photo { get; set; }
     }
 }

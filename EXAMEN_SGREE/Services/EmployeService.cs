@@ -34,6 +34,7 @@ namespace EXAMEN_SGREE.Services
             {
                 var existing = db.Employes.Find(emp.Id);
                 if (existing == null) return;
+
                 existing.Nom = emp.Nom;
                 existing.Prenom = emp.Prenom;
                 existing.Adresse = emp.Adresse;
@@ -43,6 +44,11 @@ namespace EXAMEN_SGREE.Services
                 existing.DateNaissance = emp.DateNaissance;
                 existing.NombreEnfants = emp.NombreEnfants;
                 existing.SituationMatrimoniale = emp.SituationMatrimoniale;
+
+                // ── Photo : on ne l'écrase que si une nouvelle a été choisie
+                if (emp.Photo != null && emp.Photo.Length > 0)
+                    existing.Photo = emp.Photo;
+
                 db.SaveChanges();
             }
         }

@@ -18,13 +18,12 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btnDashboard = new System.Windows.Forms.Button();
             this.panelAlertesBandeau = new System.Windows.Forms.Panel();
+            this.btnMasquerBandeau = new System.Windows.Forms.Button();
             this.lblBandeauIcone = new System.Windows.Forms.Label();
             this.lblBandeauTexte = new System.Windows.Forms.Label();
-            this.btnMasquerBandeau = new System.Windows.Forms.Button();
             this.panelFiltres = new System.Windows.Forms.Panel();
             this.lblDerniereMAJ = new System.Windows.Forms.Label();
             this.btnActualiser = new System.Windows.Forms.Button();
-            this.btnRapport = new System.Windows.Forms.Button();
             this.panelKpis = new System.Windows.Forms.Panel();
             this.panelKpi1 = new System.Windows.Forms.Panel();
             this.lblKpi1Title = new System.Windows.Forms.Label();
@@ -91,7 +90,7 @@
             this.btnDashboard.Click += new System.EventHandler(this.btnDashboard_Click);
             // 
             // panelAlertesBandeau
-            // ─── FIX : btnMasquerBandeau appartient ici, pas dans panelFiltres ───
+            // 
             this.panelAlertesBandeau.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.panelAlertesBandeau.Controls.Add(this.btnMasquerBandeau);
             this.panelAlertesBandeau.Controls.Add(this.lblBandeauIcone);
@@ -102,6 +101,21 @@
             this.panelAlertesBandeau.Size = new System.Drawing.Size(1200, 36);
             this.panelAlertesBandeau.TabIndex = 4;
             this.panelAlertesBandeau.Visible = false;
+            // 
+            // btnMasquerBandeau
+            // 
+            this.btnMasquerBandeau.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnMasquerBandeau.FlatAppearance.BorderSize = 0;
+            this.btnMasquerBandeau.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMasquerBandeau.Font = new System.Drawing.Font("Century Gothic", 8F, System.Drawing.FontStyle.Bold);
+            this.btnMasquerBandeau.ForeColor = System.Drawing.Color.White;
+            this.btnMasquerBandeau.Location = new System.Drawing.Point(1107, 6);
+            this.btnMasquerBandeau.Name = "btnMasquerBandeau";
+            this.btnMasquerBandeau.Size = new System.Drawing.Size(90, 24);
+            this.btnMasquerBandeau.TabIndex = 2;
+            this.btnMasquerBandeau.Text = "Masquer";
+            this.btnMasquerBandeau.UseVisualStyleBackColor = false;
+            this.btnMasquerBandeau.Click += new System.EventHandler(this.BtnMasquerBandeau_Click);
             // 
             // lblBandeauIcone
             // 
@@ -124,27 +138,11 @@
             this.lblBandeauTexte.Size = new System.Drawing.Size(0, 22);
             this.lblBandeauTexte.TabIndex = 1;
             // 
-            // btnMasquerBandeau
-            // 
-            this.btnMasquerBandeau.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.btnMasquerBandeau.FlatAppearance.BorderSize = 0;
-            this.btnMasquerBandeau.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnMasquerBandeau.Font = new System.Drawing.Font("Century Gothic", 8F, System.Drawing.FontStyle.Bold);
-            this.btnMasquerBandeau.ForeColor = System.Drawing.Color.White;
-            this.btnMasquerBandeau.Location = new System.Drawing.Point(1107, 6);
-            this.btnMasquerBandeau.Name = "btnMasquerBandeau";
-            this.btnMasquerBandeau.Size = new System.Drawing.Size(90, 24);
-            this.btnMasquerBandeau.TabIndex = 2;
-            this.btnMasquerBandeau.Text = "Masquer";
-            this.btnMasquerBandeau.UseVisualStyleBackColor = false;
-            this.btnMasquerBandeau.Click += new System.EventHandler(this.BtnMasquerBandeau_Click);
-            // 
-            // panelFiltres  (btnMasquerBandeau retiré d'ici)
+            // panelFiltres
             // 
             this.panelFiltres.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(220)))), ((int)(((byte)(220)))));
             this.panelFiltres.Controls.Add(this.lblDerniereMAJ);
             this.panelFiltres.Controls.Add(this.btnActualiser);
-            this.panelFiltres.Controls.Add(this.btnRapport);
             this.panelFiltres.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelFiltres.Location = new System.Drawing.Point(0, 82);
             this.panelFiltres.Name = "panelFiltres";
@@ -176,21 +174,6 @@
             this.btnActualiser.Text = "Actualiser";
             this.btnActualiser.UseVisualStyleBackColor = false;
             this.btnActualiser.Click += new System.EventHandler(this.BtnActualiser_Click);
-            // 
-            // btnRapport
-            // 
-            this.btnRapport.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(34)))), ((int)(((byte)(139)))), ((int)(((byte)(34)))));
-            this.btnRapport.FlatAppearance.BorderSize = 0;
-            this.btnRapport.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRapport.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Bold);
-            this.btnRapport.ForeColor = System.Drawing.Color.White;
-            this.btnRapport.Location = new System.Drawing.Point(976, 9);
-            this.btnRapport.Name = "btnRapport";
-            this.btnRapport.Size = new System.Drawing.Size(130, 28);
-            this.btnRapport.TabIndex = 2;
-            this.btnRapport.Text = "Rapport Crystal";
-            this.btnRapport.UseVisualStyleBackColor = false;
-            this.btnRapport.Click += new System.EventHandler(this.BtnRapport_Click);
             // 
             // panelKpis
             // 
@@ -645,6 +628,7 @@
             this.panelTopEmployeurs.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTopEmployeurs)).EndInit();
             this.ResumeLayout(false);
+
         }
 
         // ─── Déclarations ─────────────────────────────────────────────
@@ -656,7 +640,6 @@
         private System.Windows.Forms.Panel panelFiltres;
         private System.Windows.Forms.Label lblDerniereMAJ;
         private System.Windows.Forms.Button btnActualiser;
-        private System.Windows.Forms.Button btnRapport;
         private System.Windows.Forms.Panel panelKpis;
         private System.Windows.Forms.Panel panelKpi1, panelKpi2, panelKpi3, panelKpi4, panelKpi5;
         private System.Windows.Forms.Label lblKpi1Title, lblKpi1Val, lblKpi1Sub;

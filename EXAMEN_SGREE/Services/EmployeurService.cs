@@ -59,7 +59,7 @@ namespace EXAMEN_SGREE.Services
                 }
             }
         }
-
+            
         public bool NIEAExists(string ninea, int excludeId = 0)
         {
             using (var db = new DbContextSgree())

@@ -187,6 +187,10 @@
     <Compile Include="Migrations\202602261408221_InitialCreate.Designer.cs">
       <DependentUpon>202602261408221_InitialCreate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202603240645367_AjoutPhotoEmploye.cs" />
+    <Compile Include="Migrations\202603240645367_AjoutPhotoEmploye.Designer.cs">
+      <DependentUpon>202603240645367_AjoutPhotoEmploye.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Competence.cs" />
     <Compile Include="Model\Contrat.cs" />
@@ -257,6 +261,9 @@
     <EmbeddedResource Include="Migrations\202602261408221_InitialCreate.resx">
       <DependentUpon>202602261408221_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202603240645367_AjoutPhotoEmploye.resx">
+      <DependentUpon>202603240645367_AjoutPhotoEmploye.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -293,9 +300,7 @@
   <ItemGroup>
     <None Include="Resources\959fea7c-d0f4-439b-afa7-2d84d0c0d14f.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Reports\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>

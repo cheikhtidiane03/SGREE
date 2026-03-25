@@ -51,6 +51,11 @@
             this.btnExportExcel = new System.Windows.Forms.Button();
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelBottom = new System.Windows.Forms.Panel();
+            // Nouveaux contrôles pour la photo
+            this.picPhoto = new System.Windows.Forms.PictureBox();
+            this.btnSelectPhoto = new System.Windows.Forms.Button();
+            this.lblPhotoStatus = new System.Windows.Forms.Label();
+
             ((System.ComponentModel.ISupportInitialize)(this.npuEnfant)).BeginInit();
             this.panelFiltres.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -58,6 +63,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.npuPageSize)).BeginInit();
             this.panelMain.SuspendLayout();
             this.panelBottom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picPhoto)).BeginInit();
             this.SuspendLayout();
             // 
             // btnEmploye
@@ -435,13 +441,16 @@
             this.btnExportExcel.Name = "btnExportExcel";
             this.btnExportExcel.Size = new System.Drawing.Size(130, 30);
             this.btnExportExcel.TabIndex = 5;
-            this.btnExportExcel.Text = "📥 Export CSV";
+            this.btnExportExcel.Text = "📥 Export Excel";
             this.btnExportExcel.UseVisualStyleBackColor = false;
             this.btnExportExcel.Click += new System.EventHandler(this.BtnExportExcel_Click);
             // 
             // panelMain
             // 
             this.panelMain.BackColor = System.Drawing.Color.Linen;
+            this.panelMain.Controls.Add(this.picPhoto);
+            this.panelMain.Controls.Add(this.btnSelectPhoto);
+            this.panelMain.Controls.Add(this.lblPhotoStatus);
             this.panelMain.Controls.Add(this.label1);
             this.panelMain.Controls.Add(this.txtNom1);
             this.panelMain.Controls.Add(this.label9);
@@ -482,6 +491,41 @@
             this.panelBottom.Size = new System.Drawing.Size(1148, 446);
             this.panelBottom.TabIndex = 0;
             // 
+            // picPhoto
+            // 
+            this.picPhoto.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picPhoto.Location = new System.Drawing.Point(850, 18);
+            this.picPhoto.Name = "picPhoto";
+            this.picPhoto.Size = new System.Drawing.Size(150, 150);
+            this.picPhoto.TabIndex = 22;
+            this.picPhoto.TabStop = false;
+            this.picPhoto.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picPhoto.BackColor = System.Drawing.Color.LightGray;
+            // 
+            // btnSelectPhoto
+            // 
+            this.btnSelectPhoto.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
+            this.btnSelectPhoto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSelectPhoto.ForeColor = System.Drawing.Color.White;
+            this.btnSelectPhoto.Location = new System.Drawing.Point(850, 175);
+            this.btnSelectPhoto.Name = "btnSelectPhoto";
+            this.btnSelectPhoto.Size = new System.Drawing.Size(150, 35);
+            this.btnSelectPhoto.TabIndex = 23;
+            this.btnSelectPhoto.Text = "📷 Sélectionner photo";
+            this.btnSelectPhoto.UseVisualStyleBackColor = false;
+            this.btnSelectPhoto.Click += new System.EventHandler(this.BtnSelectPhoto_Click);
+            // 
+            // lblPhotoStatus
+            // 
+            this.lblPhotoStatus.AutoSize = true;
+            this.lblPhotoStatus.Font = new System.Drawing.Font("Century Gothic", 8F);
+            this.lblPhotoStatus.Location = new System.Drawing.Point(850, 215);
+            this.lblPhotoStatus.Name = "lblPhotoStatus";
+            this.lblPhotoStatus.Size = new System.Drawing.Size(130, 19);
+            this.lblPhotoStatus.TabIndex = 24;
+            this.lblPhotoStatus.Text = "Aucune photo";
+            this.lblPhotoStatus.ForeColor = System.Drawing.Color.Gray;
+            // 
             // ControlEmploye
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -503,6 +547,7 @@
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             this.panelBottom.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.picPhoto)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -525,5 +570,9 @@
         private System.Windows.Forms.Label lblPageSize, lblPage;
         private System.Windows.Forms.NumericUpDown npuPageSize;
         private System.Windows.Forms.Button btnPrecedent, btnSuivant, btnExportExcel;
+        // Nouveaux contrôles
+        private System.Windows.Forms.PictureBox picPhoto;
+        private System.Windows.Forms.Button btnSelectPhoto;
+        private System.Windows.Forms.Label lblPhotoStatus;
     }
 }
