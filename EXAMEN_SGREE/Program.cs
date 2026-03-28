@@ -1,22 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace EXAMEN_SGREE
 {
-    internal static class Program
+    static class Program
     {
-        /// <summary>
-        /// Point d'entrée principal de l'application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            using (var login = new FormLogin())
+            {
+                DialogResult result = login.ShowDialog();
+
+                if (result == DialogResult.OK && SessionUtilisateur.EstConnecte)
+                {
+                    Application.Run(new Form1());
+                }
+            }
         }
     }
 }

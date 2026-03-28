@@ -12,7 +12,6 @@ namespace EXAMEN_SGREE.Services
         private const decimal SMIG = 60000m;
         private const int DUREE_MAX_CDD_MOIS = 24;
 
-        // ─── CRUD ─────────────────────────────────────────────────────────
         public List<Contrat> GetAll()
         {
             using (var db = new DbContextSgree())
@@ -80,7 +79,6 @@ namespace EXAMEN_SGREE.Services
             }
         }
 
-        // ─── RENOUVELLEMENT ───────────────────────────────────────────────
         public ResultatOperation Renouveler(int contratId, DateTime nouvelleDateFin, decimal nouveauSalaire)
         {
             using (var db = new DbContextSgree())
@@ -107,7 +105,6 @@ namespace EXAMEN_SGREE.Services
             return ResultatOperation.Ok("Contrat renouvele avec succes.");
         }
 
-        // ─── RESILIATION ──────────────────────────────────────────────────
         public ResultatOperation Resilier(int contratId, string motif)
         {
             if (string.IsNullOrWhiteSpace(motif))
@@ -126,8 +123,6 @@ namespace EXAMEN_SGREE.Services
             return ResultatOperation.Ok("Contrat resilie.");
         }
 
-        // ─── ALERTES CONTRATS EXPIRANT ────────────────────────────────────
-        /// <summary>Retourne les contrats expirant dans les 'joursAvant' jours.</summary>
         public List<Contrat> GetContratsExpirant(int joursAvant = 30)
         {
             var limite = DateTime.Today.AddDays(joursAvant);
@@ -143,10 +138,8 @@ namespace EXAMEN_SGREE.Services
                     .ToList();
         }
 
-        // ─── VALIDATION METIER ────────────────────────────────────────────
         public ResultatOperation ValiderContrat(Contrat c, bool isNew)
         {
-            // Champs obligatoires
             if (string.IsNullOrWhiteSpace(c.Poste))
                 return ResultatOperation.Erreur("Le poste est obligatoire.");
 
@@ -159,11 +152,9 @@ namespace EXAMEN_SGREE.Services
             if (c.DepartementId == 0)
                 return ResultatOperation.Erreur("Selectionnez un departement.");
 
-            // Regle : salaire >= SMIG
             if (c.SalaireBase < SMIG)
                 return ResultatOperation.Erreur("Le salaire de base ne peut etre inferieur au SMIG (" + SMIG.ToString("N0") + " FCFA).");
 
-            // Regle : date fin > date debut (sauf CDI)
             if (c.TypeContrat != TypeContrat.CDI)
             {
                 if (c.DateFin == null)
@@ -172,7 +163,6 @@ namespace EXAMEN_SGREE.Services
                     return ResultatOperation.Erreur("La date de fin doit etre superieure a la date de debut.");
             }
 
-            // Regle : CDD <= 24 mois
             if (c.TypeContrat == TypeContrat.CDD && c.DateFin != null)
             {
                 double duree = (c.DateFin.Value - c.DateDebut).Days / 30.0;
@@ -180,7 +170,6 @@ namespace EXAMEN_SGREE.Services
                     return ResultatOperation.Erreur("Un CDD ne peut exceder " + DUREE_MAX_CDD_MOIS + " mois (2 ans).");
             }
 
-            // Regle : un seul contrat actif par employe/employeur
             using (var db = new DbContextSgree())
             {
                 var query = db.Contrats.Where(x =>
@@ -197,7 +186,6 @@ namespace EXAMEN_SGREE.Services
             return ResultatOperation.Ok(string.Empty);
         }
 
-        // ─── GENERATION NUMERO ────────────────────────────────────────────
         private string GenererNumero(DbContextSgree db)
         {
             int annee = DateTime.Now.Year;
@@ -206,7 +194,6 @@ namespace EXAMEN_SGREE.Services
         }
     }
 
-    // ─── Classe résultat opération ─────────────────────────────────────────
     public class ResultatOperation
     {
         public bool Succes { get; private set; }

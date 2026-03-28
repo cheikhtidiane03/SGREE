@@ -45,7 +45,6 @@ namespace EXAMEN_SGREE.Services
                 existing.NombreEnfants = emp.NombreEnfants;
                 existing.SituationMatrimoniale = emp.SituationMatrimoniale;
 
-                // ── Photo : on ne l'écrase que si une nouvelle a été choisie
                 if (emp.Photo != null && emp.Photo.Length > 0)
                     existing.Photo = emp.Photo;
 

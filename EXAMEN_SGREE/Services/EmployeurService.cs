@@ -74,7 +74,6 @@ namespace EXAMEN_SGREE.Services
                     .Where(c => c.EmployeurId == employeurId)
                     .ToList();
 
-                // Masse salariale = contrats actifs (EnCours ou Actif)
                 var contratsActifs = contrats.Where(c =>
                     c.Statut == StatutContrat.EnCours ||
                     c.Statut == StatutContrat.Actif);

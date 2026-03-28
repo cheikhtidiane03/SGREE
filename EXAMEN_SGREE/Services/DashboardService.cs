@@ -7,14 +7,8 @@ using System.Linq;
 
 namespace EXAMEN_SGREE.Services
 {
-    /// <summary>
-    /// Agrège toutes les données nécessaires au tableau de bord SGREE.
-    /// </summary>
     public class DashboardService
     {
-        // ═══════════════════════════════════════════════════════════════
-        //  KPIs PRINCIPAUX
-        // ═══════════════════════════════════════════════════════════════
         public DashboardKpis GetKpis()
         {
             using (var db = new DbContextSgree())
@@ -50,9 +44,6 @@ namespace EXAMEN_SGREE.Services
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        //  RÉPARTITION PAR SECTEUR (pour camembert)
-        // ═══════════════════════════════════════════════════════════════
         public List<(string Secteur, int NbEmployeurs, int NbEmployes)> GetRepartitionSecteur()
         {
             using (var db = new DbContextSgree())
@@ -80,9 +71,6 @@ namespace EXAMEN_SGREE.Services
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        //  ÉVOLUTION DES EFFECTIFS (6 derniers mois)
-        // ═══════════════════════════════════════════════════════════════
         public List<(string Mois, int NbContrats, decimal MasseSalariale)> GetEvolutionMensuelle()
         {
             using (var db = new DbContextSgree())
@@ -112,9 +100,6 @@ namespace EXAMEN_SGREE.Services
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        //  RÉPARTITION PAR TYPE DE CONTRAT
-        // ═══════════════════════════════════════════════════════════════
         public List<(string Type, int Nombre)> GetRepartitionTypeContrat()
         {
             using (var db = new DbContextSgree())
@@ -129,9 +114,6 @@ namespace EXAMEN_SGREE.Services
             }
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        //  ALERTES COMPLÈTES
-        // ═══════════════════════════════════════════════════════════════
         public List<AlerteDashboard> GetAlertes()
         {
             var alertes = new List<AlerteDashboard>();
@@ -141,7 +123,6 @@ namespace EXAMEN_SGREE.Services
                 var contrats = db.Contrats.Include("Employe").Include("Employeur").ToList();
                 var employes = db.Employes.ToList();
 
-                // Contrats expirant dans 30 jours
                 var expirants = contrats.Where(c =>
                     c.DateFin.HasValue &&
                     c.DateFin.Value > DateTime.Today &&
@@ -162,7 +143,6 @@ namespace EXAMEN_SGREE.Services
                     });
                 }
 
-                // Employés sans contrat actif
                 var sansContrat = employes.Where(e =>
                     !contrats.Any(c => c.EmployeId == e.Id &&
                         (c.Statut == StatutContrat.Actif || c.Statut == StatutContrat.EnCours)));
@@ -179,7 +159,6 @@ namespace EXAMEN_SGREE.Services
                     });
                 }
 
-                // Employeurs suspendus avec contrats actifs
                 var empSuspendus = db.Employeurs
                     .Where(e => e.Statut == StatutEmployeur.Suspendu).ToList();
                 foreach (var emp in empSuspendus)
@@ -201,9 +180,6 @@ namespace EXAMEN_SGREE.Services
             return alertes.OrderBy(a => a.Niveau).ThenBy(a => a.DateEcheance).ToList();
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        //  TOP EMPLOYEURS (par nb employés)
-        // ═══════════════════════════════════════════════════════════════
         public List<(string RaisonSociale, string Secteur, int NbEmployes, decimal MasseSalariale)> GetTopEmployeurs()
         {
             using (var db = new DbContextSgree())
@@ -227,10 +203,6 @@ namespace EXAMEN_SGREE.Services
             }
         }
     }
-
-    // ═══════════════════════════════════════════════════════════════════
-    //  MODÈLES DASHBOARD
-    // ═══════════════════════════════════════════════════════════════════
     public class DashboardKpis
     {
         public int TotalEmployes { get; set; }

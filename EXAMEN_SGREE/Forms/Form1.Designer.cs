@@ -6,13 +6,16 @@
 
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null)) components.Dispose();
+            if (disposing && components != null) components.Dispose();
             base.Dispose(disposing);
         }
 
         private void InitializeComponent()
         {
             this.MenuVertical = new System.Windows.Forms.Panel();
+            this.panelUtilisateur = new System.Windows.Forms.Panel();
+            this.lblUtilisateur = new System.Windows.Forms.Label();
+            this.btnDeconnexion = new System.Windows.Forms.Button();
             this.btnContrat = new System.Windows.Forms.Button();
             this.btnEmploye = new System.Windows.Forms.Button();
             this.btnEmployeur = new System.Windows.Forms.Button();
@@ -24,6 +27,7 @@
             this.controlEmployeur1 = new EXAMEN_SGREE.ControlEmployeur();
             this.controlDashboard1 = new EXAMEN_SGREE.ControlDashboard();
             this.MenuVertical.SuspendLayout();
+            this.panelUtilisateur.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panelcontenedor.SuspendLayout();
             this.SuspendLayout();
@@ -31,6 +35,7 @@
             // MenuVertical
             // 
             this.MenuVertical.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(122)))), ((int)(((byte)(204)))));
+            this.MenuVertical.Controls.Add(this.panelUtilisateur);
             this.MenuVertical.Controls.Add(this.btnContrat);
             this.MenuVertical.Controls.Add(this.btnEmploye);
             this.MenuVertical.Controls.Add(this.btnEmployeur);
@@ -41,6 +46,46 @@
             this.MenuVertical.Name = "MenuVertical";
             this.MenuVertical.Size = new System.Drawing.Size(244, 800);
             this.MenuVertical.TabIndex = 1;
+            // 
+            // panelUtilisateur
+            // 
+            this.panelUtilisateur.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(80)))), ((int)(((byte)(150)))));
+            this.panelUtilisateur.Controls.Add(this.lblUtilisateur);
+            this.panelUtilisateur.Controls.Add(this.btnDeconnexion);
+            this.panelUtilisateur.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelUtilisateur.Location = new System.Drawing.Point(0, 710);
+            this.panelUtilisateur.Name = "panelUtilisateur";
+            this.panelUtilisateur.Padding = new System.Windows.Forms.Padding(8, 6, 8, 6);
+            this.panelUtilisateur.Size = new System.Drawing.Size(244, 90);
+            this.panelUtilisateur.TabIndex = 0;
+            // 
+            // lblUtilisateur
+            // 
+            this.lblUtilisateur.AutoEllipsis = true;
+            this.lblUtilisateur.Font = new System.Drawing.Font("Century Gothic", 8.5F, System.Drawing.FontStyle.Bold);
+            this.lblUtilisateur.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(225)))), ((int)(((byte)(255)))));
+            this.lblUtilisateur.Location = new System.Drawing.Point(8, 8);
+            this.lblUtilisateur.Name = "lblUtilisateur";
+            this.lblUtilisateur.Size = new System.Drawing.Size(205, 30);
+            this.lblUtilisateur.TabIndex = 0;
+            this.lblUtilisateur.Text = "👤  Utilisateur";
+            this.lblUtilisateur.Click += new System.EventHandler(this.lblUtilisateur_Click);
+            // 
+            // btnDeconnexion
+            // 
+            this.btnDeconnexion.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(180)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.btnDeconnexion.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnDeconnexion.FlatAppearance.BorderSize = 0;
+            this.btnDeconnexion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnDeconnexion.Font = new System.Drawing.Font("Century Gothic", 9.5F, System.Drawing.FontStyle.Bold);
+            this.btnDeconnexion.ForeColor = System.Drawing.Color.White;
+            this.btnDeconnexion.Location = new System.Drawing.Point(8, 42);
+            this.btnDeconnexion.Name = "btnDeconnexion";
+            this.btnDeconnexion.Size = new System.Drawing.Size(205, 36);
+            this.btnDeconnexion.TabIndex = 1;
+            this.btnDeconnexion.Text = "Deconnexion";
+            this.btnDeconnexion.UseVisualStyleBackColor = false;
+            this.btnDeconnexion.Click += new System.EventHandler(this.BtnDeconnexion_Click);
             // 
             // btnContrat
             // 
@@ -115,7 +160,7 @@
             this.pictureBox1.Image = global::EXAMEN_SGREE.Properties.Resources._959fea7c_d0f4_439b_afa7_2d84d0c0d14f;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(235, 120);
+            this.pictureBox1.Size = new System.Drawing.Size(241, 120);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 4;
             this.pictureBox1.TabStop = false;
@@ -181,10 +226,11 @@
             this.Controls.Add(this.MenuVertical);
             this.MinimumSize = new System.Drawing.Size(1100, 700);
             this.Name = "Form1";
-            this.Text = "SGREE - Systeme de Gestion des Relations Employes-Employeurs";
+            this.Text = "SGREE";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.MenuVertical.ResumeLayout(false);
+            this.panelUtilisateur.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panelcontenedor.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -198,6 +244,9 @@
         private System.Windows.Forms.Button btnEmployeur;
         private System.Windows.Forms.Button btnEmploye;
         private System.Windows.Forms.Button btnContrat;
+        private System.Windows.Forms.Panel panelUtilisateur;
+        private System.Windows.Forms.Label lblUtilisateur;
+        private System.Windows.Forms.Button btnDeconnexion;
         private ControlDashboard controlDashboard1;
         private ControlEmployeur controlEmployeur1;
         private ControlEmploye controlEmploye1;

@@ -7,10 +7,10 @@ namespace SGREE.Models
 {
     public class EmployeCompetence
     {
-        [Key, Column(Order = 0)]  // ← clé composite : les deux ensemble
+        [Key, Column(Order = 0)] 
         public int EmployeId { get; set; }
 
-        [Key, Column(Order = 1)]  // ← clé composite
+        [Key, Column(Order = 1)] 
         public int CompetenceId { get; set; }
 
         public NiveauCompetence Niveau { get; set; }

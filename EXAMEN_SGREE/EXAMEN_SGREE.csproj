@@ -171,17 +171,23 @@
     <Compile Include="Forms\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Formlogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Formlogin.Designer.cs">
+      <DependentUpon>Formlogin.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Formrenouvellement.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\Formrenouvellement.Designer.cs">
       <DependentUpon>Formrenouvellement.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Frmperiodeselection.cs">
+    <Compile Include="Forms\FrmPeriodeSelection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Frmperiodeselection.Designer.cs">
-      <DependentUpon>Frmperiodeselection.cs</DependentUpon>
+    <Compile Include="Forms\FrmPeriodeSelection.Designer.cs">
+      <DependentUpon>FrmPeriodeSelection.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\202602261408221_InitialCreate.cs" />
     <Compile Include="Migrations\202602261408221_InitialCreate.Designer.cs">
@@ -191,6 +197,10 @@
     <Compile Include="Migrations\202603240645367_AjoutPhotoEmploye.Designer.cs">
       <DependentUpon>202603240645367_AjoutPhotoEmploye.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202603261459560_AjoutUtilisateurs.cs" />
+    <Compile Include="Migrations\202603261459560_AjoutUtilisateurs.Designer.cs">
+      <DependentUpon>202603261459560_AjoutUtilisateurs.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Competence.cs" />
     <Compile Include="Model\Contrat.cs" />
@@ -199,6 +209,8 @@
     <Compile Include="Model\EmployeCompetence.cs" />
     <Compile Include="Model\Employeur.cs" />
     <Compile Include="Model\EmployeurStats.cs" />
+    <Compile Include="Model\Sessionutilisateur.cs" />
+    <Compile Include="Model\Utilisateur.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rptstatsdept.cs">
@@ -219,6 +231,7 @@
     <Compile Include="Services\DepartementService.cs" />
     <Compile Include="Services\EmployeService.cs" />
     <Compile Include="Services\EmployeurService.cs" />
+    <Compile Include="Services\Utilisateurservice.cs" />
     <EmbeddedResource Include="Forms\Crystalreportclasses.resx">
       <DependentUpon>Crystalreportclasses.cs</DependentUpon>
     </EmbeddedResource>
@@ -252,17 +265,23 @@
     <EmbeddedResource Include="Forms\Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Formlogin.resx">
+      <DependentUpon>Formlogin.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Formrenouvellement.resx">
       <DependentUpon>Formrenouvellement.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Frmperiodeselection.resx">
-      <DependentUpon>Frmperiodeselection.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\FrmPeriodeSelection.resx">
+      <DependentUpon>FrmPeriodeSelection.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202602261408221_InitialCreate.resx">
       <DependentUpon>202602261408221_InitialCreate.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202603240645367_AjoutPhotoEmploye.resx">
       <DependentUpon>202603240645367_AjoutPhotoEmploye.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202603261459560_AjoutUtilisateurs.resx">
+      <DependentUpon>202603261459560_AjoutUtilisateurs.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

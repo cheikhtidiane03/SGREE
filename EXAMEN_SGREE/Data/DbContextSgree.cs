@@ -15,6 +15,8 @@ namespace SGREE.Data
         public DbSet<Contrat> Contrats { get; set; }
         public DbSet<Competence> Competences { get; set; }
         public DbSet<EmployeCompetence> EmployeCompetences { get; set; }
+        public DbSet<Utilisateur> Utilisateurs { get; set; }
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -26,6 +28,47 @@ namespace SGREE.Data
             modelBuilder.Entity<Contrat>().ToTable("Contrats");
             modelBuilder.Entity<Competence>().ToTable("Competences");
             modelBuilder.Entity<EmployeCompetence>().ToTable("EmployeCompetences");
+            modelBuilder.Entity<Utilisateur>().ToTable("Utilisateurs");
+
+            // Configuration de l'utilisateur
+            modelBuilder.Entity<Utilisateur>()
+                .Property(u => u.Email)
+                .HasMaxLength(255)  // Spécifier une longueur pour pouvoir créer un index
+                .IsRequired();
+
+            // Email unique
+            modelBuilder.Entity<Utilisateur>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            // Si nécessaire, configurez aussi les autres propriétés
+            modelBuilder.Entity<Utilisateur>()
+                .Property(u => u.Nom)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            modelBuilder.Entity<Utilisateur>()
+                .Property(u => u.Prenom)
+                .HasMaxLength(100)
+                .IsRequired();
+
+            modelBuilder.Entity<Utilisateur>()
+                .Property(u => u.MotDePasseHash)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            modelBuilder.Entity<Utilisateur>()
+                .Property(u => u.Sel)
+                .HasMaxLength(255)
+                .IsRequired();
+
+            modelBuilder.Entity<Utilisateur>()
+                .Property(u => u.Role)
+                .HasMaxLength(50);
+
+            // Ignorer la propriété calculée
+            modelBuilder.Entity<Utilisateur>()
+                .Ignore(u => u.NomComplet);
 
             // 🚫 Departement -> Employeur
             modelBuilder.Entity<Departement>()

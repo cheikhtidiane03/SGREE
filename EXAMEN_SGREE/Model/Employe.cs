@@ -20,11 +20,6 @@ namespace SGREE.Models
         public SituationMatrimoniale SituationMatrimoniale { get; set; }
         public int NombreEnfants { get; set; }
 
-
-        /// <summary>
-        /// Photo de l'employé stockée en binaire (VARBINARY(MAX) en base).
-        /// Nullable — la photo est optionnelle.
-        /// </summary>
         [Column(TypeName = "image")]
         public byte[] Photo { get; set; }
     }
